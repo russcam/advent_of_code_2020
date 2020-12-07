@@ -4,7 +4,7 @@ use std::collections::{
 };
 use regex::Regex;
 
-const INPUT: &str = include_str!("input.txt");
+const INPUT: &str = include_str!("../../input/day_4.txt");
 
 fn main() {
     let passports = parse_passports(INPUT);

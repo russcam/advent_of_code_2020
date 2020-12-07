@@ -5,7 +5,7 @@ static REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"^(?P<min>\d+)\-(?P<max>\d+)\s(?P<char>\w):\s(?P<password>.*)$").unwrap()
 });
 
-const INPUT: &str = include_str!("input.txt");
+const INPUT: &str = include_str!("../../input/day_2.txt");
 
 fn main() {
     let lines = INPUT.lines().collect::<Vec<&str>>();

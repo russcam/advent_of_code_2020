@@ -1,6 +1,6 @@
 use std::iter::{FromIterator, Iterator};
 
-const INPUT: &str = include_str!("input.txt");
+const INPUT: &str = include_str!("../../input/day_3.txt");
 
 fn main() {
     let map: Map = INPUT

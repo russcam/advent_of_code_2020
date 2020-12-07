@@ -1,8 +1,0 @@
-[package]
-name = "day_1"
-publish = false
-version = "0.1.0"
-authors = ["Russ Cam <russ.cam@forloop.co.uk>"]
-edition = "2018"
-
-[dependencies]
