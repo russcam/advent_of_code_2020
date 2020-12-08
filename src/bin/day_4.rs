@@ -1,8 +1,5 @@
-use std::collections::{
-    HashMap,
-    HashSet
-};
 use regex::Regex;
+use std::collections::{HashMap, HashSet};
 
 const INPUT: &str = include_str!("../../input/day_4.txt");
 
@@ -10,15 +7,20 @@ fn main() {
     let passports = parse_passports(INPUT);
     let required_fields_validator = RequiredFieldsValidator::new();
 
-    let valid_passports = passports.iter()
+    let valid_passports = passports
+        .iter()
         .filter(|p| required_fields_validator.valid(p))
         .collect::<Vec<_>>();
 
-    println!("valid passports according to required fields: {}", valid_passports.len());
+    println!(
+        "valid passports according to required fields: {}",
+        valid_passports.len()
+    );
 
     let rules_validator = RulesValidator::new();
 
-    let valid = valid_passports.iter()
+    let valid = valid_passports
+        .iter()
         .filter(|p| rules_validator.valid(p))
         .count();
 
@@ -36,11 +38,10 @@ fn parse_passports(input: &str) -> Vec<Passport> {
             continue;
         }
 
-        let kvs = line.split(' ')
-            .map(|l| {
-                let mut kv = l.split(':');
-                (kv.next().unwrap(), kv.next().unwrap())
-            });
+        let kvs = line.split(' ').map(|l| {
+            let mut kv = l.split(':');
+            (kv.next().unwrap(), kv.next().unwrap())
+        });
 
         for (k, v) in kvs {
             passport.insert(k, v);
@@ -54,7 +55,7 @@ fn parse_passports(input: &str) -> Vec<Passport> {
 pub struct Passport<'a>(HashMap<&'a str, &'a str>);
 
 impl<'a> Passport<'a> {
-    pub fn new () -> Self {
+    pub fn new() -> Self {
         Self(HashMap::new())
     }
 
@@ -69,7 +70,7 @@ pub trait Validator {
 
 struct RequiredFieldsValidator<'a> {
     required_fields: HashSet<&'a str>,
-    all_fields: HashSet<&'a str>
+    all_fields: HashSet<&'a str>,
 }
 
 impl<'a> RequiredFieldsValidator<'a> {
@@ -88,15 +89,26 @@ impl<'a> RequiredFieldsValidator<'a> {
 
         Self {
             required_fields,
-            all_fields
+            all_fields,
         }
     }
 }
 
 impl<'a> Validator for RequiredFieldsValidator<'a> {
     fn valid(&self, passport: &Passport) -> bool {
-        let required_fields = self.required_fields.difference(&passport.0.keys().cloned().collect()).next().is_none();
-        let all_fields = passport.0.keys().cloned().collect::<HashSet<&str>>().difference(&self.all_fields).next().is_none();
+        let required_fields = self
+            .required_fields
+            .difference(&passport.0.keys().cloned().collect())
+            .next()
+            .is_none();
+        let all_fields = passport
+            .0
+            .keys()
+            .cloned()
+            .collect::<HashSet<&str>>()
+            .difference(&self.all_fields)
+            .next()
+            .is_none();
         required_fields && all_fields
     }
 }
@@ -105,7 +117,7 @@ struct RulesValidator {
     hgt_regex: Regex,
     hcl_regex: Regex,
     ecl_regex: Regex,
-    pid_regex: Regex
+    pid_regex: Regex,
 }
 
 impl RulesValidator {
@@ -123,26 +135,33 @@ impl Validator for RulesValidator {
     fn valid(&self, passport: &Passport) -> bool {
         for (key, value) in passport.0.iter() {
             let valid = match *key {
-                "byr" => value.parse::<u32>().map(|i| i >= 1920 && i <= 2002).unwrap_or(false),
-                "iyr" => value.parse::<u32>().map(|i| i >= 2010 && i <= 2020).unwrap_or(false),
-                "eyr" => value.parse::<u32>().map(|i| i >= 2020 && i <= 2030).unwrap_or(false),
-                "hgt" => {
-                    match self.hgt_regex.captures(value) {
-                        Some(caps) => {
-                            let v: i32 = caps["value"].parse().unwrap();
-                            match &caps["unit"] {
-                                "cm" => v >= 150 && v <= 193,
-                                "in" => v >= 59 && v <= 76,
-                                _ => false
-                            }
+                "byr" => value
+                    .parse::<u32>()
+                    .map(|i| i >= 1920 && i <= 2002)
+                    .unwrap_or(false),
+                "iyr" => value
+                    .parse::<u32>()
+                    .map(|i| i >= 2010 && i <= 2020)
+                    .unwrap_or(false),
+                "eyr" => value
+                    .parse::<u32>()
+                    .map(|i| i >= 2020 && i <= 2030)
+                    .unwrap_or(false),
+                "hgt" => match self.hgt_regex.captures(value) {
+                    Some(caps) => {
+                        let v: i32 = caps["value"].parse().unwrap();
+                        match &caps["unit"] {
+                            "cm" => v >= 150 && v <= 193,
+                            "in" => v >= 59 && v <= 76,
+                            _ => false,
                         }
-                        _ => false
                     }
+                    _ => false,
                 },
                 "hcl" => self.hcl_regex.is_match(value),
                 "ecl" => self.ecl_regex.is_match(value),
                 "pid" => self.pid_regex.is_match(value),
-                 _ => true,
+                _ => true,
             };
 
             if !valid {
@@ -153,4 +172,3 @@ impl Validator for RulesValidator {
         true
     }
 }
-
