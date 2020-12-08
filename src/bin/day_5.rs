@@ -8,7 +8,7 @@ fn main() {
 
     println!("highest seat is {}", highest_seat);
 
-    seat_ids.sort();
+    seat_ids.sort_unstable();
     let mut my_seat = 0;
 
     for (idx, this_seat) in seat_ids.iter().enumerate() {
@@ -42,8 +42,8 @@ impl<'a> BoardingPass<'a> {
         for (idx, c) in self.input.chars().enumerate() {
             let idx = idx as i32;
             match c {
-                'B' => row += 1 * 2i32.pow((idx - 6).abs() as u32),
-                'R' => seat += 1 * 2i32.pow((idx - 9).abs() as u32),
+                'B' => row += 2i32.pow((idx - 6).abs() as u32),
+                'R' => seat += 2i32.pow((idx - 9).abs() as u32),
                 _ => (),
             }
         }

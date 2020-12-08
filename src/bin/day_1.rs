@@ -6,7 +6,7 @@ fn main() {
         .filter_map(|l| l.trim().parse().ok())
         .collect();
 
-    codes.sort();
+    codes.sort_unstable();
 
     // product of two values that sum to 2020
     'two_outer: for (n, i) in codes.iter().enumerate() {

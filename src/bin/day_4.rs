@@ -64,6 +64,12 @@ impl<'a> Passport<'a> {
     }
 }
 
+impl<'a> Default for Passport<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub trait Validator {
     fn valid(&self, passport: &Passport) -> bool;
 }
